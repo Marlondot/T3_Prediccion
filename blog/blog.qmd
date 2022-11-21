@@ -1,0 +1,185 @@
+---
+title: "Analisis de accidentes viales en la ciudad de Medellin"
+lang: es    
+bibliography: references.bib
+author:
+  - name: Daniel Daza Macias
+    email: dadazam@unal.edu.co
+  - name: Daniel Santiago Cadavid Montoya
+    email: dcadavid@unal.edu.co
+  - name: Jose Daniel Bustamante Arango
+    email: jobustamantea@unal.edu.co
+  - name: Marlon Calle Areiza
+    email: mcallea@unal.edu.co
+  - name: Ronald Gabriel Palencia
+    email: ropalencia@unal.edu.co
+format:
+  html:
+    code-fold: true
+jupyter: python3
+echo: false
+theme:
+          light: flatly
+          dark: darkly
+toc: true
+appendix-style: default
+---
+
+## Introducción
+
+El siguiente trabajo tiene como objetivo la predeción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.
+
+Para realizar el siguiente reporte utilizamos la base de datos facilitada por @DataWebsite que además contiene un diccionario para cada una de las columnas.
+
+### Contexto del problema
+
+*Falta*
+
+### Resumen resultados
+
+*Falta*
+
+### Metodos empleados y objetivos de desarrollo
+
+*Falta hablar de la clusterización*
+
+Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. Se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
+
+## Importe y análisis de datos
+
+Para comenzar se hará un cargue del conjunto de datos:
+
+```{python}
+#| tbl-cap: Datos iniciales
+#| label: tbl-import-presentacion-inicial
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sb
+#from google.colab import drive
+import numpy as np
+from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix, precision_recall_curve, auc
+from sklearn.feature_selection import f_classif
+from sklearn.pipeline import Pipeline
+from sklearn.base import BaseEstimator, TransformerMixin
+from scipy.stats import chi2_contingency
+%matplotlib inline
+#import plotnine as p9
+#import holidays_co
+from datar.dplyr import group_by, summarise, n
+from datetime import datetime
+
+pd.set_option("display.max_columns", 4)
+
+
+df = pd.read_csv('incidentes_viales.csv', sep = ";")
+holidays = pd.read_csv("holidays.csv")
+
+df.head(5)
+```
+
+En @tbl-import-presentacion-inicial se puede observar el dataframe inicial de los datos, donde además se puede apreciar el tipo de dato de algunas de las columnas.
+
+Por otra parte, como se ve en @tbl-import-dias-festivos  también se hace un cargue de datos a los días festivos.
+
+
+```{python}
+#| tbl-cap: Dias festivos
+#| label: tbl-import-dias-festivos 
+
+pd.set_option("display.max_columns", 15)
+
+# limpiar los nombres de la columnas 
+df.columns=["ano",	"cbml",	"clase_accidente",	"direccion",	"direccion_encasillada",	"diseno","expediente",	"fecha_accidente",	"fecha_accidentes",	"gravedad_accidente",	"mes",	"nro_radicado",	"numcomuna",	"barrio",	"comuna",	"location",	"x",	"y"]
+
+holidays
+```
+
+
+*Falta hacer descripción de variables*
+
+Como se puede observar en @tbl-anal-nulos nuestro dataset contiene una cantidad de datos nulos, que para las variables que nos interesa es bastante mínima por lo que se procederán a eliminar. 
+
+```{python}
+#| tbl-cap: Análisis de datos nulos
+#| label: tbl-anal-nulos 
+
+def utiles_por_porcentaje(df, columnas, porcentaje):
+  new_df = df[columnas]
+  total = len(new_df)
+  datos = {'columna': [], 'porcentaje_datos_nulos': [], 'datos_nulos': []}
+  for col in new_df.columns:
+    nulos = new_df[col].isna().sum()
+    datos['columna'].append(col)
+    datos['porcentaje_datos_nulos'].append(nulos/total)
+    datos['datos_nulos'].append(f'{nulos} de {total}')
+  nulos_columnas = pd.DataFrame(datos)
+  mayor_02 = nulos_columnas['porcentaje_datos_nulos'] <= porcentaje
+  utiles = nulos_columnas[mayor_02].sort_values(by='porcentaje_datos_nulos')
+  return utiles
+
+
+utiles_por_porcentaje(df, df.columns, 0.1)
+```
+
+```{python}
+
+
+
+
+## eliminación de valores nulos, esto se debe discutir 
+df_con_na = df.copy()
+df=dropna()
+
+tildes = {'\\xC1': 'Á',
+'\\xE1': 'á',
+'\\xE9': 'é',
+'\\xED': 'í',
+'\\xF3': 'ó',
+'\\xF1': 'ñ',
+'\\xFA': 'ú',
+'\xC1': 'Á',
+'\xE1': 'á',
+'\xE9': 'é',
+'\xED': 'í',
+'\xF3': 'ó',
+'\xF1': 'ñ',
+'\xFA': 'ú'
+}
+
+
+#df['barrio'] = df['barrio'].apply(lambda x:x.replace('\\xC1','Á'))
+for col in ['clase_accidente','direccion','diseno','gravedad_accidente','barrio','comuna']:
+  for word, replacement in tildes.items():
+    df[col] = df[col].apply(lambda x: x.replace(word,replacement))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+nocite: |
+  @*
+---
+
+## Referencias
+
+::: {#refs}
+:::

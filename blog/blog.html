@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.179">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Daniel Daza Macias">
+<meta name="author" content="Daniel Santiago Cadavid Montoya">
+<meta name="author" content="Jose Daniel Bustamante Arango">
+<meta name="author" content="Marlon Calle Areiza">
+<meta name="author" content="Ronald Gabriel Palencia">
+
+<title>Analisis de accidentes viales en la ciudad de Medellin</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="blog_files/libs/clipboard/clipboard.min.js"></script>
+<script src="blog_files/libs/quarto-html/quarto.js"></script>
+<script src="blog_files/libs/quarto-html/popper.min.js"></script>
+<script src="blog_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="blog_files/libs/quarto-html/anchor.min.js"></script>
+<link href="blog_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="blog_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="blog_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="blog_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="blog_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="blog_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="blog_files/libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Indice de contenidos</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a>
+  <ul class="collapse">
+  <li><a href="#contexto-del-problema" id="toc-contexto-del-problema" class="nav-link" data-scroll-target="#contexto-del-problema">Contexto del problema</a></li>
+  <li><a href="#resumen-resultados" id="toc-resumen-resultados" class="nav-link" data-scroll-target="#resumen-resultados">Resumen resultados</a></li>
+  <li><a href="#metodos-empleados-y-objetivos-de-desarrollo" id="toc-metodos-empleados-y-objetivos-de-desarrollo" class="nav-link" data-scroll-target="#metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</a></li>
+  </ul></li>
+  <li><a href="#importe-y-análisis-de-datos" id="toc-importe-y-análisis-de-datos" class="nav-link" data-scroll-target="#importe-y-análisis-de-datos">Importe y análisis de datos</a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Analisis de accidentes viales en la ciudad de Medellin</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniel Daza Macias </p>
+             <p>Daniel Santiago Cadavid Montoya </p>
+             <p>Jose Daniel Bustamante Arango </p>
+             <p>Marlon Calle Areiza </p>
+             <p>Ronald Gabriel Palencia </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>El siguiente trabajo tiene como objetivo la predeción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.</p>
+<p>Para realizar el siguiente reporte utilizamos la base de datos facilitada por <span class="citation" data-cites="DataWebsite">Secretaría de Movilidad-UNE Subsecretaría Técnica (<a href="#ref-DataWebsite" role="doc-biblioref">2020</a>)</span> que además contiene un diccionario para cada una de las columnas.</p>
+<section id="contexto-del-problema" class="level3">
+<h3 class="anchored" data-anchor-id="contexto-del-problema">Contexto del problema</h3>
+<p><em>Falta</em></p>
+</section>
+<section id="resumen-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-resultados">Resumen resultados</h3>
+<p><em>Falta</em></p>
+</section>
+<section id="metodos-empleados-y-objetivos-de-desarrollo" class="level3">
+<h3 class="anchored" data-anchor-id="metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</h3>
+<p><em>Falta hablar de la clusterización</em></p>
+<p>Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: ‘choque’, ‘atropello’ ‘volcamiento’ ‘caida de ocupante’ ‘incendio’ y ‘otro’. Se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.</p>
+</section>
+</section>
+<section id="importe-y-análisis-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="importe-y-análisis-de-datos">Importe y análisis de datos</h2>
+<p>Para comenzar se hará un cargue del conjunto de datos:</p>
+<div class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div id="tbl-import-presentacion-inicial" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;1:  Datos iniciales </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>AÑO</th>
+      <th>CBML</th>
+      <th>...</th>
+      <th>X</th>
+      <th>Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="font-style: italic;"></th>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">...</td>
+      <td style="font-style: italic;">&lt;float64&gt;</td>
+      <td style="font-style: italic;">&lt;float64&gt;</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>2015</td>
+      <td>1013</td>
+      <td>...</td>
+      <td>834949.69</td>
+      <td>1182357.34</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2015</td>
+      <td>1020</td>
+      <td>...</td>
+      <td>834880.17</td>
+      <td>1180762.02</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2015</td>
+      <td>0205</td>
+      <td>...</td>
+      <td>837004.94</td>
+      <td>1188499.17</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2015</td>
+      <td>0101</td>
+      <td>...</td>
+      <td>837688.53</td>
+      <td>1188663.05</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2015</td>
+      <td>1504</td>
+      <td>...</td>
+      <td>833903.11</td>
+      <td>1179469.60</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 18 columns</p>
+</div>
+</div>
+</div>
+</div>
+<p>En <a href="#tbl-import-presentacion-inicial">Tabla&nbsp;1</a> se puede observar el dataframe inicial de los datos</p>
+<p>Por otra parte, como se ve en @ también se hace un cargue de datos a los días festivos</p>
+<div class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="tbl-import-dias-festivos" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;2:  Dias festivos </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>holidays_fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="font-style: italic;"></th>
+      <td style="font-style: italic;">&lt;int64&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2014-01-01</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>2014-01-06</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2014-03-19</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>2014-04-13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>2014-04-17</td>
+    </tr>
+    <tr>
+      <th>269</th>
+      <td>1510</td>
+      <td>2022-10-17</td>
+    </tr>
+    <tr>
+      <th>270</th>
+      <td>1610</td>
+      <td>2022-11-07</td>
+    </tr>
+    <tr>
+      <th>271</th>
+      <td>1710</td>
+      <td>2022-11-14</td>
+    </tr>
+    <tr>
+      <th>272</th>
+      <td>1810</td>
+      <td>2022-12-08</td>
+    </tr>
+    <tr>
+      <th>273</th>
+      <td>1910</td>
+      <td>2022-12-25</td>
+    </tr>
+  </tbody>
+</table>
+<p>274 rows × 2 columns</p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="tbl-anal-nulos" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;3:  Análisis de datos nulos </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>columna</th>
+      <th>porcentaje_datos_nulos</th>
+      <th>datos_nulos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="font-style: italic;"></th>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;float64&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ano</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>location</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>numcomuna</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>mes</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>gravedad_accidente</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>x</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>fecha_accidente</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>fecha_accidentes</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>direccion</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>y</td>
+      <td>0.000000</td>
+      <td>0 de 270765</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>nro_radicado</td>
+      <td>0.000018</td>
+      <td>5 de 270765</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>clase_accidente</td>
+      <td>0.000022</td>
+      <td>6 de 270765</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>expediente</td>
+      <td>0.000406</td>
+      <td>110 de 270765</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>direccion_encasillada</td>
+      <td>0.001444</td>
+      <td>391 de 270765</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>diseno</td>
+      <td>0.004240</td>
+      <td>1148 de 270765</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>comuna</td>
+      <td>0.047266</td>
+      <td>12798 de 270765</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>cbml</td>
+      <td>0.067054</td>
+      <td>18156 de 270765</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>barrio</td>
+      <td>0.070194</td>
+      <td>19006 de 270765</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="referencias" class="level2">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-IntroML" class="csl-entry" role="doc-biblioentry">
+Andreas C. Müller, Sarah Guido. 2016. <em>Introduction to Machine Learning with Python</em>. O’Reilly Media, Inc.
+</div>
+<div id="ref-Data1" class="csl-entry" role="doc-biblioentry">
+Asad Mumtaz. 2020. <span>«How to Develop a Credit Risk Model and Scorecard»</span>. 2020. <a href="https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03">https://towardsdatascience.com/how-to-develop-a-credit-risk-model-and-scorecard-91335fc01f03</a>.
+</div>
+<div id="ref-Creditriskanalytics" class="csl-entry" role="doc-biblioentry">
+Bart Baesens, Harald Scheule, Daniel Roesch. 2016. <em>Credit risk analytics: Measurement techniques, applications, and examples in SAS</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-PagNews2" class="csl-entry" role="doc-biblioentry">
+Deepanshu Bhalla. 2019. <span>«A COMPLETE GUIDE TO CREDIT RISK MODELLING»</span>. 2019. <a href="https://www.listendata.com/2019/08/credit-risk-modelling.html#id-8eb70a">https://www.listendata.com/2019/08/credit-risk-modelling.html#id-8eb70a</a>.
+</div>
+<div id="ref-HandsOn" class="csl-entry" role="doc-biblioentry">
+Géron, Aurélien. 2019. <em>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition</em>. O’Reilly Media, Inc.
+</div>
+<div id="ref-CreditScoring" class="csl-entry" role="doc-biblioentry">
+Lyn Thomas, David Edelman, Jonathan Crook. 2002. <em>Credit Scoring and its Applications.</em> David Marshall.
+</div>
+<div id="ref-PagNews1" class="csl-entry" role="doc-biblioentry">
+Nathalia Morales Arévalo. 2022. <span>«Bancos con mayores y menores índices de cartera vencida con corte a junio»</span>. 2022. <a href="https://www.larepublica.co/finanzas/bancos-con-mayores-y-menores-indices-de-cartera-vencida-con-corte-a-junio-de-2022-3453315">https://www.larepublica.co/finanzas/bancos-con-mayores-y-menores-indices-de-cartera-vencida-con-corte-a-junio-de-2022-3453315</a>.
+</div>
+<div id="ref-DataWebsite" class="csl-entry" role="doc-biblioentry">
+Secretaría de Movilidad-UNE Subsecretaría Técnica. 2020. <span>«Incidentes viales»</span>. 2020. <a href="http://medata.gov.co/dataset/incidentes-viales">http://medata.gov.co/dataset/incidentes-viales</a>.
+</div>
+<div id="ref-Creditriskscorecards" class="csl-entry" role="doc-biblioentry">
+Siddiqi, Naeem. 2012. <em>Credit risk scorecards: developing and implementing intelligent credit scoring</em>. John Wiley &amp; Sons.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiada");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
