@@ -80,8 +80,14 @@ div.csl-indent {
   <li><a href="#resumen-resultados" id="toc-resumen-resultados" class="nav-link" data-scroll-target="#resumen-resultados">Resumen resultados</a></li>
   <li><a href="#metodos-empleados-y-objetivos-de-desarrollo" id="toc-metodos-empleados-y-objetivos-de-desarrollo" class="nav-link" data-scroll-target="#metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</a></li>
   </ul></li>
-  <li><a href="#importe-y-análisis-de-datos" id="toc-importe-y-análisis-de-datos" class="nav-link" data-scroll-target="#importe-y-análisis-de-datos">Importe y análisis de datos</a></li>
+  <li><a href="#importe-y-análisis-de-datos" id="toc-importe-y-análisis-de-datos" class="nav-link" data-scroll-target="#importe-y-análisis-de-datos">Importe y análisis de datos</a>
+  <ul class="collapse">
+  <li><a href="#descripción-de-los-datos" id="toc-descripción-de-los-datos" class="nav-link" data-scroll-target="#descripción-de-los-datos">Descripción de los datos</a></li>
+  </ul></li>
+  <li><a href="#formulación-modelo" id="toc-formulación-modelo" class="nav-link" data-scroll-target="#formulación-modelo">Formulación modelo</a>
+  <ul class="collapse">
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -113,29 +119,35 @@ div.csl-indent {
 
 </header>
 
-<section id="introducción" class="level2">
-<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<section id="introducción" class="level1">
+<h1>Introducción</h1>
 <p>El siguiente trabajo tiene como objetivo la predeción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.</p>
 <p>Para realizar el siguiente reporte utilizamos la base de datos facilitada por <span class="citation" data-cites="DataWebsite">Secretaría de Movilidad-UNE Subsecretaría Técnica (<a href="#ref-DataWebsite" role="doc-biblioref">2020</a>)</span> que además contiene un diccionario para cada una de las columnas.</p>
-<section id="contexto-del-problema" class="level3">
-<h3 class="anchored" data-anchor-id="contexto-del-problema">Contexto del problema</h3>
+<section id="contexto-del-problema" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-del-problema">Contexto del problema</h2>
 <p><em>Falta</em></p>
 </section>
-<section id="resumen-resultados" class="level3">
-<h3 class="anchored" data-anchor-id="resumen-resultados">Resumen resultados</h3>
+<section id="resumen-resultados" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-resultados">Resumen resultados</h2>
 <p><em>Falta</em></p>
 </section>
-<section id="metodos-empleados-y-objetivos-de-desarrollo" class="level3">
-<h3 class="anchored" data-anchor-id="metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</h3>
+<section id="metodos-empleados-y-objetivos-de-desarrollo" class="level2">
+<h2 class="anchored" data-anchor-id="metodos-empleados-y-objetivos-de-desarrollo">Metodos empleados y objetivos de desarrollo</h2>
 <p><em>Falta hablar de la clusterización</em></p>
 <p>Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: ‘choque’, ‘atropello’ ‘volcamiento’ ‘caida de ocupante’ ‘incendio’ y ‘otro’. Se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.</p>
 </section>
 </section>
-<section id="importe-y-análisis-de-datos" class="level2">
-<h2 class="anchored" data-anchor-id="importe-y-análisis-de-datos">Importe y análisis de datos</h2>
+<section id="importe-y-análisis-de-datos" class="level1">
+<h1>Importe y análisis de datos</h1>
 <p>Para comenzar se hará un cargue del conjunto de datos:</p>
 <div class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\marlo\AppData\Local\Programs\Python\Python310\lib\site-packages\IPython\core\interactiveshell.py:3398: DtypeWarning:
+
+Columns (0,11) have mixed types.Specify dtype option on import or set low_memory=False.
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div id="tbl-import-presentacion-inicial" class="anchored">
 
 <div>
@@ -207,10 +219,10 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<p>En <a href="#tbl-import-presentacion-inicial">Tabla&nbsp;1</a> se puede observar el dataframe inicial de los datos</p>
-<p>Por otra parte, como se ve en @ también se hace un cargue de datos a los días festivos</p>
+<p>En <a href="#tbl-import-presentacion-inicial">Tabla&nbsp;1</a> se puede observar el dataframe inicial de los datos, donde además se puede apreciar el tipo de dato de algunas de las columnas.</p>
+<p>Por otra parte, como se ve en <a href="#tbl-import-dias-festivos">Tabla&nbsp;2</a> también se hace un cargue de datos a los días festivos.</p>
 <div class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div id="tbl-import-dias-festivos" class="anchored">
 
 <div>
@@ -291,13 +303,123 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<p>Antes de continuar se hará un cambio de nombre a algunas de las columnas para simplificar la escritura de las mismas. En <a href="#tbl-descripcion-variables">Tabla&nbsp;3</a> se puede apreciar la descripción y el tipo de dato para cada una de las variables.</p>
 <div class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div id="tbl-descripcion-variables" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;3: Descripción variables</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">tipo de dato</th>
+<th style="text-align: left;">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ano</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Año de ocurrencia del incidente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cbml</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Codigo catastral que corresponde al codigo comuna, barrio, manzana, lote catastral de un predio.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">clase_accidente</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Clasificación del IPAT sobre la clase de accidente de transito: choque, atropello, volcamiento, caida de ocupante, incendio, u otro (que no corresponde a las anteriores 5 clasificaciones, p.&nbsp;ej: sumersión)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">direccion</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Dirección donde ocurrió el incidente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">direccion_encasillada</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Dirección encasillada que entrega el geocodificador</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">diseno</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Sitio de la vía donde ocurrió el accidente: Cicloruta, Glorieta, Interseccion, Lote o Predio, Paso a Nivel, Paso Elevado, Paso Inferior, Pontón, Puente, Tramo de via, Tunel, Via peatonal</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">expediente</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Consecutivo que asigna UNE, según el orden de llegada de los expedientes para su diligenciamiento</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fecha_accidente</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Fecha del accidente, proviene del IPAT - Informe Policial de accidente de Tránsito</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fecha_accidentes</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Fecha de los accidente (formato YYYY-MM-DD hh:mi:ss), proviene del IPAT - Informe Policial de accidentes de Tránsito</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gravedad_accidente</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Clasificación del IPAT - Informe Policial de Accidentes de Tránsito, sobre la gravedad del accidente, corresponde al resultado más grave presentado en el accidente. Daños materiales “Sólo daños”, accidente con heridos “Herido”, accidente con muertos “Muerto”. No indica cantidad</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mes</td>
+<td style="text-align: left;">int64</td>
+<td style="text-align: left;">Mes de ocurrencia del incidente vial</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nro_radicado</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Consecutivo que asigna UNE, según el orden de llegada de los expedientes para su diligenciamiento</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numcomuna</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Numero de la comununa en la que ocurrio incidente vial</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">barrio</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Barrio de ocurrencia del incidente vial</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">comuna</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Denominación con la cual se identifica cada Comuna o Corregimiento. 01:Popular 02:Santa Cruz 03:Manrique 04:Aranjuez 05:Castilla 06:Doce de Octubre 07:Robledo 08:Villa Hermosa 09:Buenos Aires 10:La Candelaria 11:Laureles - Estadio 12:La América 13:San Javier 14:El Poblado 15:Guayabal 16:Belén 50:San Sebastián de Palmitas 60:San Cristobal 70:Altavista 80:San Antonio de Prado 90:Santa Elena 99:Toda la Ciudad</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">location</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">Fuente de información con la cual se realizó la geocodificación</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">x</td>
+<td style="text-align: left;">float64</td>
+<td style="text-align: left;">Coordenada X en metros del accidente, en sistema de coordenadas MAGNA Medellin Local</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y</td>
+<td style="text-align: left;">float64</td>
+<td style="text-align: left;">Coordenada Y en metros del accidente, en sistema de coordenadas MAGNA Medellin Local</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Como se puede observar en <a href="#tbl-anal-nulos">Tabla&nbsp;4</a> nuestro dataset contiene una cantidad de datos nulos, que para las variables que nos interesa es bastante mínima por lo que se procederán a eliminar.</p>
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div id="tbl-anal-nulos" class="anchored">
 
 <div>
 
-<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;3:  Análisis de datos nulos </caption>
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;4:  Análisis de datos nulos </caption>
   <thead>
     <tr>
       <th></th>
@@ -427,10 +549,593 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<p>Además dada la tabla de descripciones identificamos como variables de poco interés a: ‘cbml’, ‘direccion’, ‘direccion_encasillada’, ‘expediente’, ‘nro_radicado’ y ‘location’, esto debido al poco valor aportante identificado en estas.</p>
+<div class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\marlo\AppData\Local\Temp\ipykernel_11872\1060182171.py:25: SettingWithCopyWarning:
+
+
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+</code></pre>
+</div>
+</div>
+<section id="descripción-de-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="descripción-de-los-datos">Descripción de los datos</h2>
+<p>Como se pudo notar en <a href="#tbl-descripcion-variables">Tabla&nbsp;3</a> la mayoría de las variables son categóricas. Así, se procederá a ver los valores únicos de cada una.</p>
+<div class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div id="tbl-count-clase_accidente" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;5: Cantidad de datos únicos en clase_accidente</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Choque</td>
+<td style="text-align: right;">169383</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Otro</td>
+<td style="text-align: right;">26919</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Atropello</td>
+<td style="text-align: right;">23556</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Caida Ocupante</td>
+<td style="text-align: right;">15864</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Volcamiento</td>
+<td style="text-align: right;">9190</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Caída de Ocupante</td>
+<td style="text-align: right;">5745</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Incendio</td>
+<td style="text-align: right;">29</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Como se puede notar en <a href="#tbl-count-clase_accidente">Tabla&nbsp;5</a> una gran cantidad de los datos corresponden al valor ‘Choque’, mientras que por otro lado el valor ‘incendio’ es quien menos valores tiene.</p>
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div id="tbl-count-diseno" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;6: Cantidad de datos únicos en diseno</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Tramo de via</td>
+<td style="text-align: right;">173470</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Interseccion</td>
+<td style="text-align: right;">42400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lote o Predio</td>
+<td style="text-align: right;">24309</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Glorieta</td>
+<td style="text-align: right;">6373</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paso Elevado</td>
+<td style="text-align: right;">1314</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ciclo Ruta</td>
+<td style="text-align: right;">966</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puente</td>
+<td style="text-align: right;">951</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Paso Inferior</td>
+<td style="text-align: right;">649</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paso a Nivel</td>
+<td style="text-align: right;">114</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tunel</td>
+<td style="text-align: right;">58</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Via peatonal</td>
+<td style="text-align: right;">53</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pontón</td>
+<td style="text-align: right;">29</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Se puede notar en <a href="#tbl-count-diseno">Tabla&nbsp;6</a> que una gran cantidad de los accidentes ocurrieron en tramo de via, mientras que en vía peatonales, túneles y pontones es donde menos ocurrieron.</p>
+<div class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="tbl-count-gravedad_accidente" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;7: Cantidad de datos únicos en gravedad_accidente</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Con heridos</td>
+<td style="text-align: right;">137965</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Solo daños</td>
+<td style="text-align: right;">112395</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Con muertos</td>
+<td style="text-align: right;">326</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Se puede notar en <a href="#tbl-count-gravedad_accidente">Tabla&nbsp;7</a> que una poca cantidad de accidentes ocurren con muertos.</p>
+<div class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div id="tbl-count-mes" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;8: Cantidad de datos únicos en mes</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">25100</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">23304</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">22336</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">22165</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">21395</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">20835</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">20621</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">19969</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">19695</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">18758</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18645</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">17863</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Además a primera vista se puede notar en <a href="#tbl-count-mes">Tabla&nbsp;8</a> que existe una uniformidad sobre el mes en el que ocurren los accidentes.</p>
+<div class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div id="tbl-count-comuna" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Tabla&nbsp;9: Cantidad de datos únicos en comuna</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Cantidad de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">La Candelaria</td>
+<td style="text-align: right;">51941</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Laureles Estadio</td>
+<td style="text-align: right;">26957</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Castilla</td>
+<td style="text-align: right;">24795</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">El Poblado</td>
+<td style="text-align: right;">21662</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Guayabal</td>
+<td style="text-align: right;">18418</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Belén</td>
+<td style="text-align: right;">16733</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Robledo</td>
+<td style="text-align: right;">16459</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aranjuez</td>
+<td style="text-align: right;">14290</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Buenos Aires</td>
+<td style="text-align: right;">9852</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">La América</td>
+<td style="text-align: right;">8022</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Manrique</td>
+<td style="text-align: right;">7734</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Doce de Octubre</td>
+<td style="text-align: right;">6863</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Villa Hermosa</td>
+<td style="text-align: right;">6690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">San Javier</td>
+<td style="text-align: right;">4294</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corregimiento de San Antonio de Prado</td>
+<td style="text-align: right;">4007</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Popular</td>
+<td style="text-align: right;">3700</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Santa Cruz</td>
+<td style="text-align: right;">3423</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corregimiento de San Cristóbal</td>
+<td style="text-align: right;">2607</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">1018</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corregimiento de Santa Elena</td>
+<td style="text-align: right;">598</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corregimiento de Altavista</td>
+<td style="text-align: right;">565</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">In</td>
+<td style="text-align: right;">37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corregimiento de San Sebastián de Palmitas</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AU</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SN</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>De <a href="#tbl-count-comuna">Tabla&nbsp;9</a> se puede notar que la candelaria es la comuna en la que más ocurren accidentes, mientras que es común que los corregimiento estén abajo en cantidades.</p>
 </section>
+</section>
+<section id="formulación-modelo" class="level1">
+<h1>Formulación modelo</h1>
+<div class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div id="tbl-nuevo-df" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Tabla&nbsp;10:  Dataframe resultante </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>fecha_accidente</th>
+      <th>clase_accidente</th>
+      <th>barrio</th>
+      <th>comuna</th>
+      <th>location</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="font-style: italic;"></th>
+      <td style="font-style: italic;">&lt;datetime64[ns]&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;object&gt;</td>
+      <td style="font-style: italic;">&lt;int64&gt;</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>2015-10-21 05:58:00</td>
+      <td>Caida Ocupante</td>
+      <td>Barrio Colón</td>
+      <td>La Candelaria</td>
+      <td>[-75.5688011014, 6.24312304123]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2015-11-05 03:00:00</td>
+      <td>Choque</td>
+      <td>San Diego</td>
+      <td>La Candelaria</td>
+      <td>[-75.5693883283, 6.22870030622]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2015-10-21 07:40:00</td>
+      <td>Otro</td>
+      <td>La Francia</td>
+      <td>Santa Cruz</td>
+      <td>[-75.5503911403, 6.29869502502]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2015-10-21 12:00:00</td>
+      <td>Atropello</td>
+      <td>Santo Domingo Savio No. 1</td>
+      <td>Popular</td>
+      <td>[-75.5442195069, 6.30019383306]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2015-11-03 06:16:00</td>
+      <td>Choque</td>
+      <td>Santa Fé</td>
+      <td>Guayabal</td>
+      <td>[-75.578180998, 6.21699243701]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>250390</th>
+      <td>2020-08-31 18:50:00</td>
+      <td>Caida Ocupante</td>
+      <td>El Chagualo</td>
+      <td>La Candelaria</td>
+      <td>[-75.5731343044, 6.26063534822]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>250391</th>
+      <td>2020-08-31 18:50:00</td>
+      <td>Otro</td>
+      <td>Cuarta Brigada</td>
+      <td>Laureles Estadio</td>
+      <td>[-75.5902062951, 6.26040455473]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>250392</th>
+      <td>2020-08-31 19:05:00</td>
+      <td>Choque</td>
+      <td>Cementerio Universal</td>
+      <td>Castilla</td>
+      <td>[-75.5735398111, 6.27625838886]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>250393</th>
+      <td>2020-08-31 19:30:00</td>
+      <td>Atropello</td>
+      <td>Villa del Socorro</td>
+      <td>Santa Cruz</td>
+      <td>[-75.5515085985, 6.29359892373]</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>250394</th>
+      <td>2020-08-31 21:45:00</td>
+      <td>Atropello</td>
+      <td>Campo Valdés No. 2</td>
+      <td>Manrique</td>
+      <td>[-75.5533856947, 6.2717784831]</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>250395 rows × 6 columns</p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\marlo\AppData\Local\Temp\ipykernel_11872\1609512056.py:3: FutureWarning:
+
+Series.dt.weekofyear and Series.dt.week have been deprecated.  Please use Series.dt.isocalendar().week instead.
+</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                      y   No. Observations:               188561
+Model:                            GLM   Df Residuals:                   188486
+Model Family:                 Poisson   Df Model:                           74
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:            -1.8872e+05
+Date:                Tue, 22 Nov 2022   Deviance:                       182.76
+Time:                        00:56:48   Pearson chi2:                     240.
+No. Iterations:                     3   Pseudo R-squ. (CS):          8.739e-07
+Covariance Type:            nonrobust                                         
+========================================================================================================================
+                                                           coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------------------------------------------------
+Intercept                                               -0.1227      3.738     -0.033      0.974      -7.449       7.203
+mes[T.2]                                                 0.0003      0.013      0.024      0.981      -0.025       0.025
+mes[T.3]                                                 0.0002      0.014      0.017      0.986      -0.026       0.027
+mes[T.4]                                                 0.0012      0.015      0.080      0.936      -0.029       0.032
+mes[T.5]                                                 0.0009      0.018      0.049      0.961      -0.034       0.035
+mes[T.6]                                                 0.0017      0.020      0.086      0.932      -0.038       0.041
+mes[T.7]                                                 0.0016      0.023      0.070      0.944      -0.043       0.046
+mes[T.8]                                                 0.0016      0.026      0.061      0.952      -0.049       0.052
+mes[T.9]                                                 0.0021      0.029      0.072      0.943      -0.054       0.058
+mes[T.10]                                                0.0024      0.032      0.076      0.939      -0.060       0.065
+mes[T.11]                                                0.0024      0.035      0.068      0.946      -0.066       0.071
+mes[T.12]                                                0.0031      0.037      0.083      0.934      -0.070       0.076
+dia[T.2]                                                 0.0011      0.018      0.059      0.953      -0.035       0.037
+dia[T.3]                                              7.057e-05      0.018      0.004      0.997      -0.036       0.036
+dia[T.4]                                                -0.0002      0.018     -0.009      0.993      -0.036       0.036
+dia[T.5]                                                -0.0002      0.018     -0.009      0.993      -0.036       0.035
+dia[T.6]                                                 0.0005      0.018      0.027      0.979      -0.035       0.036
+dia[T.7]                                                 0.0002      0.018      0.012      0.991      -0.036       0.036
+dia[T.8]                                                -0.0003      0.018     -0.014      0.989      -0.036       0.036
+dia[T.9]                                                -0.0002      0.018     -0.013      0.990      -0.036       0.036
+dia[T.10]                                                0.0005      0.018      0.028      0.977      -0.035       0.036
+dia[T.11]                                             6.093e-05      0.018      0.003      0.997      -0.036       0.036
+dia[T.12]                                                0.0006      0.018      0.032      0.975      -0.035       0.036
+dia[T.13]                                            -2.292e-05      0.018     -0.001      0.999      -0.036       0.036
+dia[T.14]                                            -4.123e-05      0.018     -0.002      0.998      -0.036       0.036
+dia[T.15]                                            -7.933e-05      0.018     -0.004      0.997      -0.036       0.035
+dia[T.16]                                                0.0006      0.018      0.031      0.975      -0.035       0.036
+dia[T.17]                                                0.0003      0.018      0.015      0.988      -0.035       0.036
+dia[T.18]                                             8.648e-05      0.018      0.005      0.996      -0.035       0.036
+dia[T.19]                                               -0.0002      0.018     -0.009      0.992      -0.036       0.035
+dia[T.20]                                            -2.383e-05      0.018     -0.001      0.999      -0.036       0.036
+dia[T.21]                                                0.0005      0.018      0.025      0.980      -0.035       0.036
+dia[T.22]                                                0.0002      0.018      0.011      0.991      -0.036       0.036
+dia[T.23]                                                0.0002      0.018      0.009      0.993      -0.036       0.036
+dia[T.24]                                               -0.0001      0.018     -0.007      0.994      -0.036       0.036
+dia[T.25]                                                0.0004      0.018      0.021      0.983      -0.036       0.037
+dia[T.26]                                              6.44e-05      0.018      0.003      0.997      -0.036       0.036
+dia[T.27]                                                0.0007      0.018      0.038      0.969      -0.035       0.037
+dia[T.28]                                                0.0009      0.018      0.047      0.963      -0.035       0.037
+dia[T.29]                                                0.0006      0.019      0.031      0.975      -0.036       0.037
+dia[T.30]                                               -0.0004      0.019     -0.022      0.982      -0.037       0.037
+dia[T.31]                                                0.0007      0.022      0.031      0.976      -0.042       0.043
+comuna[T.AU]                                            -0.0008      0.866     -0.001      0.999      -1.698       1.697
+comuna[T.Aranjuez]                                       0.0004      0.707      0.001      1.000      -1.386       1.387
+comuna[T.Belén]                                          0.0007      0.707      0.001      0.999      -1.385       1.387
+comuna[T.Buenos Aires]                                   0.0002      0.707      0.000      1.000      -1.386       1.386
+comuna[T.Castilla]                                       0.0015      0.707      0.002      0.998      -1.385       1.388
+comuna[T.Corregimiento de Altavista]                    -0.0006      0.709     -0.001      0.999      -1.390       1.389
+comuna[T.Corregimiento de San Antonio de Prado]          0.0031      0.707      0.004      0.997      -1.383       1.390
+comuna[T.Corregimiento de San Cristóbal]                -0.0006      0.708     -0.001      0.999      -1.387       1.386
+comuna[T.Corregimiento de San Sebastián de Palmitas]    -0.0005      0.775     -0.001      1.000      -1.519       1.518
+comuna[T.Corregimiento de Santa Elena]                   0.0022      0.709      0.003      0.998      -1.388       1.392
+comuna[T.Doce de Octubre]                                0.0002      0.707      0.000      1.000      -1.386       1.387
+comuna[T.El Poblado]                                     0.0010      0.707      0.001      0.999      -1.385       1.387
+comuna[T.Guayabal]                                       0.0011      0.707      0.002      0.999      -1.385       1.387
+comuna[T.In]                                            -0.0004      0.726     -0.001      1.000      -1.423       1.423
+comuna[T.La América]                                     0.0006      0.707      0.001      0.999      -1.386       1.387
+comuna[T.La Candelaria]                                  0.0008      0.707      0.001      0.999      -1.385       1.387
+comuna[T.Laureles Estadio]                               0.0010      0.707      0.001      0.999      -1.385       1.387
+comuna[T.Manrique]                                       0.0001      0.707      0.000      1.000      -1.386       1.386
+comuna[T.Popular]                                       -0.0004      0.707     -0.001      1.000      -1.387       1.386
+comuna[T.Robledo]                                        0.0009      0.707      0.001      0.999      -1.385       1.387
+comuna[T.SN]                                            -0.0023      1.225     -0.002      0.998      -2.403       2.398
+comuna[T.San Javier]                                    -0.0005      0.707     -0.001      0.999      -1.387       1.386
+comuna[T.Santa Cruz]                                 -1.905e-05      0.707  -2.69e-05      1.000      -1.387       1.387
+comuna[T.Villa Hermosa]                                  0.0004      0.707      0.001      1.000      -1.386       1.387
+clase_accidente[T.Caida Ocupante]                        0.0014      0.012      0.118      0.906      -0.023       0.026
+clase_accidente[T.Caída de Ocupante]                     0.0013      0.015      0.085      0.932      -0.029       0.031
+clase_accidente[T.Choque]                                0.0006      0.008      0.073      0.942      -0.015       0.017
+clase_accidente[T.Incendio]                             -0.0004      0.224     -0.002      0.998      -0.439       0.438
+clase_accidente[T.Otro]                                  0.0022      0.010      0.208      0.835      -0.018       0.022
+clase_accidente[T.Volcamiento]                           0.0019      0.015      0.128      0.898      -0.027       0.031
+anio                                                   6.05e-05      0.002      0.033      0.974      -0.004       0.004
+semana                                               -5.047e-05      0.001     -0.065      0.948      -0.002       0.001
+dia_especial                                             0.0004      0.009      0.044      0.965      -0.017       0.018
+========================================================================================================================</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.0010346612591819666</code></pre>
+</div>
+</div>
 <section id="referencias" class="level2">
 
 
+</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">

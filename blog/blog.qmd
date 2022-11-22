@@ -25,27 +25,27 @@ toc: true
 appendix-style: default
 ---
 
-## Introducción
+# Introducción
 
 El siguiente trabajo tiene como objetivo la predeción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.
 
 Para realizar el siguiente reporte utilizamos la base de datos facilitada por @DataWebsite que además contiene un diccionario para cada una de las columnas.
 
-### Contexto del problema
+## Contexto del problema
 
 *Falta*
 
-### Resumen resultados
+## Resumen resultados
 
 *Falta*
 
-### Metodos empleados y objetivos de desarrollo
+## Metodos empleados y objetivos de desarrollo
 
 *Falta hablar de la clusterización*
 
 Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. Se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
 
-## Importe y análisis de datos
+# Importe y análisis de datos
 
 Para comenzar se hará un cargue del conjunto de datos:
 
@@ -70,6 +70,8 @@ from scipy.stats import chi2_contingency
 #import holidays_co
 from datar.dplyr import group_by, summarise, n
 from datetime import datetime
+from IPython.display import Markdown
+from tabulate import tabulate
 
 pd.set_option("display.max_columns", 4)
 
@@ -97,8 +99,40 @@ df.columns=["ano",	"cbml",	"clase_accidente",	"direccion",	"direccion_encasillad
 holidays
 ```
 
+Antes de continuar se hará un cambio de nombre a algunas de las columnas para simplificar la escritura de las mismas. En @tbl-descripcion-variables se puede apreciar la descripción y el tipo de dato para cada una de las variables.
 
-*Falta hacer descripción de variables*
+```{python}
+#| tbl-cap: Descripción variables
+#| label: tbl-descripcion-variables 
+
+descr_var={"ano":			"Año de ocurrencia del incidente",
+"cbml":			"Codigo catastral que corresponde al codigo comuna, barrio, manzana, lote catastral de un predio.",
+"clase_accidente":	"Clasificación del IPAT sobre la clase de accidente de transito: choque, atropello, volcamiento, caida de ocupante, incendio, u otro (que no corresponde a las anteriores 5 clasificaciones, p. ej: sumersión)",
+"direccion":		"Dirección donde ocurrió el incidente",
+"direccion_encasillada":"Dirección encasillada que entrega el geocodificador",
+"diseno":		"Sitio de la vía donde ocurrió el accidente: Cicloruta, Glorieta, Interseccion, Lote o Predio, Paso a Nivel, Paso Elevado, Paso Inferior, Pontón, Puente, Tramo de via, Tunel, Via peatonal",
+"expediente":		"Consecutivo que asigna UNE, según el orden de llegada de los expedientes para su diligenciamiento",
+"fecha_accidente":	"Fecha del accidente, proviene del IPAT - Informe Policial de accidente de Tránsito",
+"fecha_accidentes":	"Fecha de los accidente (formato YYYY-MM-DD hh:mi:ss), proviene del IPAT - Informe Policial de accidentes de Tránsito",
+"gravedad_accidente":	"Clasificación del IPAT - Informe Policial de Accidentes de Tránsito, sobre la gravedad del accidente, corresponde al resultado más grave presentado en el accidente. Daños materiales \"Sólo daños\", accidente con heridos \"Herido\", accidente con muertos \"Muerto\". No indica cantidad",
+"mes":			"Mes de ocurrencia del incidente vial",
+"nro_radicado":		"Consecutivo que asigna UNE, según el orden de llegada de los expedientes para su diligenciamiento",
+"numcomuna":		"Numero de la comununa en la que ocurrio incidente vial",
+"barrio":		"Barrio de ocurrencia del incidente vial",
+"comuna":		"Denominación con la cual se identifica cada Comuna o Corregimiento. 01:Popular 02:Santa Cruz 03:Manrique 04:Aranjuez 05:Castilla 06:Doce de Octubre 07:Robledo 08:Villa Hermosa 09:Buenos Aires 10:La Candelaria 11:Laureles - Estadio 12:La América 13:San Javier 14:El Poblado 15:Guayabal 16:Belén 50:San Sebastián de Palmitas 60:San Cristobal 70:Altavista 80:San Antonio de Prado 90:Santa Elena 99:Toda la Ciudad",
+"location":		"Fuente de información con la cual se realizó la geocodificación",
+"x":			"Coordenada X en metros del accidente, en sistema de coordenadas MAGNA Medellin Local",
+"y":			"Coordenada Y en metros del accidente, en sistema de coordenadas MAGNA Medellin Local"}
+
+
+
+table = [[i, df[i].dtype,j ] for i,j in descr_var.items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Variable","tipo de dato", "Descripción"]
+))
+```
 
 Como se puede observar en @tbl-anal-nulos nuestro dataset contiene una cantidad de datos nulos, que para las variables que nos interesa es bastante mínima por lo que se procederán a eliminar. 
 
@@ -124,6 +158,8 @@ def utiles_por_porcentaje(df, columnas, porcentaje):
 utiles_por_porcentaje(df, df.columns, 0.1)
 ```
 
+Además dada la tabla de descripciones identificamos como variables de poco interés a: 'cbml', 'direccion', 'direccion_encasillada', 'expediente', 'nro_radicado' y 'location', esto debido al poco valor aportante identificado en estas.
+
 ```{python}
 
 
@@ -131,7 +167,7 @@ utiles_por_porcentaje(df, df.columns, 0.1)
 
 ## eliminación de valores nulos, esto se debe discutir 
 df_con_na = df.copy()
-df=dropna()
+df=df_con_na.dropna()
 
 tildes = {'\\xC1': 'Á',
 '\\xE1': 'á',
@@ -157,22 +193,148 @@ for col in ['clase_accidente','direccion','diseno','gravedad_accidente','barrio'
 
 ```
 
+## Descripción de los datos
+
+Como se pudo notar en @tbl-descripcion-variables la mayoría de las variables son categóricas. Así, se procederá a ver los valores únicos de cada una.
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en clase_accidente
+#| label: tbl-count-clase_accidente 
 
 
 
+table = [[i, j] for i,j in df.clase_accidente.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+Como se puede notar en @tbl-count-clase_accidente una gran cantidad de los datos corresponden al valor 'Choque', mientras que por otro lado el valor 'incendio' es quien menos valores tiene.
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en diseno
+#| label: tbl-count-diseno 
 
 
 
+table = [[i, j] for i,j in df.diseno.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+Se puede notar en @tbl-count-diseno que una gran cantidad de los accidentes ocurrieron en tramo de via, mientras que en vía peatonales, túneles y pontones es donde menos ocurrieron.
+
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en gravedad_accidente
+#| label: tbl-count-gravedad_accidente 
 
 
 
+table = [[i, j] for i,j in df.gravedad_accidente.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+Se puede notar en @tbl-count-gravedad_accidente que una poca cantidad de accidentes ocurren con muertos.
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en mes
+#| label: tbl-count-mes 
 
 
 
+table = [[i, j] for i,j in df.mes.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+Además a primera vista se puede notar en @tbl-count-mes que existe una uniformidad sobre el mes en el que ocurren los accidentes.
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en comuna
+#| label: tbl-count-comuna 
 
 
 
+table = [[i, j] for i,j in df.comuna.value_counts().items()]
 
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+De @tbl-count-comuna se puede notar que la candelaria es la comuna en la que más ocurren accidentes, mientras que es común que los corregimiento estén abajo en cantidades.
+
+
+# Formulación modelo
+
+```{python}
+#| tbl-cap: Dataframe resultante
+#| label: tbl-nuevo df 
+#| warning: false
+
+#df.columns
+df['fecha_accidente']=pd.to_datetime(df['fecha_accidente'], format='%d/%m/%Y %H:%M:%S')
+
+summarise.inform = False
+
+conteos = (
+     
+     df >>
+     group_by(df.fecha_accidente , df.clase_accidente, df.barrio, df.comuna,df.location) >>
+     summarise(y=n())
+
+ )
+
+conteos = pd.DataFrame(conteos)
+conteos
+```
+
+
+```{python}
+
+conteos["dia"] = conteos.fecha_accidente.dt.day
+conteos["mes"] = conteos.fecha_accidente.dt.month
+conteos["semana"] = conteos.fecha_accidente.dt.week
+conteos["anio"] = conteos.fecha_accidente.dt.year
+
+conteos["fecha"] = conteos.fecha_accidente.dt.date
+conteos['fecha']=pd.to_datetime(conteos['fecha'], format='%Y/%m/%d')
+conteos['dia_especial'] = np.where(conteos.loc[:,'fecha'].isin(holidays['holidays_fecha']),1,0)
+conteos['dia'] = conteos['dia'].astype('object')
+conteos['mes'] = conteos['mes'].astype('object')
+
+train = conteos[conteos["anio"] <= 2018]
+
+test = conteos[conteos["anio"] >= 2019]
+
+formula = 'y~ anio+mes+semana+dia+comuna+clase_accidente+dia_especial'
+
+import statsmodels.formula.api as smf
+import statsmodels.api as sm
+
+
+model = smf.glm(formula = formula, data=train, family=sm.families.Poisson()).fit()
+
+print(model.summary())
+
+predict = model.predict(test)
+
+print(np.mean((test.y - predict)**2))
+```
 
 ---
 nocite: |
