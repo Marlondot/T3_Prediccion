@@ -1,0 +1,4 @@
+- source: blog.qmd
+  quarto-pub:
+    - id: 4327113e-008f-4a64-930e-693691b81d39
+      url: 'https://quartopub.com/sites/marloneau/analisis-de-accidentes-viales-en-la-ciudad-de-medellin'

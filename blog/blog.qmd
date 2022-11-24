@@ -27,13 +27,19 @@ appendix-style: default
 
 # Introducción
 
-El siguiente trabajo tiene como objetivo la predeción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.
+*Falta hablar de la clusterización*
+
+El siguiente trabajo tiene como objetivo la predicción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.
 
 Para realizar el siguiente reporte utilizamos la base de datos facilitada por @DataWebsite que además contiene un diccionario para cada una de las columnas.
 
 ## Contexto del problema
 
-*Falta*
+Uno de los problemas principales que tienen todas las ciudades del mundo son los incidentes de transitos. Se entiende por Incidente de tránsito: evento, generalmente involuntario, generado al menos por un vehículo en movimiento, que causa daños a personas y bienes involucrados en él, e igualmente afecta la normal circulación de los vehículos que se movilizan por la vía o vías comprendidas en el lugar o dentro 
+de la zona de influencia del hecho. (Ley 769 de 2002 - Código Nacional de Tránsito)
+
+En la ciudad de Medellín se requiere predecir la accidentalidad que va a ocurrir, también se requiere agrupar los barrios, para saber que características en
+común posee cada uno para así tomar decisiones en el ámbito de la política pública para mejorar este problema. También es útil para los habitantes de medellín para saber en que lugares de la ciudad ocurren más incidentes viales y realizar estudios en base a esto.
 
 ## Resumen resultados
 
@@ -43,7 +49,7 @@ Para realizar el siguiente reporte utilizamos la base de datos facilitada por @D
 
 *Falta hablar de la clusterización*
 
-Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. Se usará Google colab y Python junto con la librería sklearn, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
+Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. Se usará Google colab y Python junto con las librerías sklearn y statsmodels, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
 
 # Importe y análisis de datos
 
@@ -52,6 +58,7 @@ Para comenzar se hará un cargue del conjunto de datos:
 ```{python}
 #| tbl-cap: Datos iniciales
 #| label: tbl-import-presentacion-inicial
+#| warning: false
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -130,7 +137,7 @@ table = [[i, df[i].dtype,j ] for i,j in descr_var.items()]
 
 Markdown(tabulate(
   table, 
-  headers=["Variable","tipo de dato", "Descripción"]
+  headers=["Variable","Tipo de dato", "Descripción"]
 ))
 ```
 
@@ -161,7 +168,7 @@ utiles_por_porcentaje(df, df.columns, 0.1)
 Además dada la tabla de descripciones identificamos como variables de poco interés a: 'cbml', 'direccion', 'direccion_encasillada', 'expediente', 'nro_radicado' y 'location', esto debido al poco valor aportante identificado en estas.
 
 ```{python}
-
+#| warning: false
 
 
 
@@ -198,8 +205,8 @@ for col in ['clase_accidente','direccion','diseno','gravedad_accidente','barrio'
 Como se pudo notar en @tbl-descripcion-variables la mayoría de las variables son categóricas. Así, se procederá a ver los valores únicos de cada una.
 
 ```{python}
-#| tbl-cap: Cantidad de datos únicos en clase_accidente
-#| label: tbl-count-clase_accidente 
+#| tbl-cap: Cantidad de datos únicos en clase_accidente V0
+#| label: tbl-count-clase_accidente-0 
 
 
 
@@ -211,7 +218,24 @@ Markdown(tabulate(
 ))
 ```
 
-Como se puede notar en @tbl-count-clase_accidente una gran cantidad de los datos corresponden al valor 'Choque', mientras que por otro lado el valor 'incendio' es quien menos valores tiene.
+Como se puede notar en @tbl-count-clase_accidente-0 existen dos valores para: relacionados a la caída de un ocupante, a pesar de que en @tbl-descripcion-variables sólo se habla de uno, por lo que se procederá a juntar estos dos valores: 
+
+```{python}
+#| tbl-cap: Cantidad de datos únicos en clase_accidente V1
+#| label: tbl-count-clase_accidente-1
+
+
+df=df.replace(["Caída de Ocupante"],"Caida Ocupante") 
+
+table = [[i, j] for i,j in df.clase_accidente.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+Como se puede notar en @tbl-count-clase_accidente-1 una gran cantidad de los datos corresponden al valor 'Choque', mientras que por otro lado el valor 'incendio' es quien menos valores tiene. 
 
 ```{python}
 #| tbl-cap: Cantidad de datos únicos en diseno
@@ -263,8 +287,8 @@ Markdown(tabulate(
 Además a primera vista se puede notar en @tbl-count-mes que existe una uniformidad sobre el mes en el que ocurren los accidentes.
 
 ```{python}
-#| tbl-cap: Cantidad de datos únicos en comuna
-#| label: tbl-count-comuna 
+#| tbl-cap: Cantidad de datos únicos en comuna V0
+#| label: tbl-count-comuna-0
 
 
 
@@ -276,14 +300,43 @@ Markdown(tabulate(
 ))
 ```
 
-De @tbl-count-comuna se puede notar que la candelaria es la comuna en la que más ocurren accidentes, mientras que es común que los corregimiento estén abajo en cantidades.
-
-
-# Formulación modelo
+De @tbl-count-comuna-0 se puede notar que además de los 21 posibles valores que se mencionan en @tbl-descripcion-variables (5 corregimiento y 16 comunas) existen 4 otros posibles valores:'0', 'In', 'AU' y 'SN' de los cuales no se tienen conocimiento algunos. Ya que en caso de utilizar la variable 'comuna' sólo necesitaremos los variables mencionados en la tabla de descripción de variables se procederá a eliminar observaciones con dichos valores:
 
 ```{python}
-#| tbl-cap: Dataframe resultante
-#| label: tbl-nuevo df 
+#| tbl-cap: Cantidad de datos únicos en comuna V1
+#| label: tbl-count-comuna-1
+
+df.drop(df[df['comuna'] == "0"].index, inplace = True)
+df.drop(df[df['comuna'] == "In"].index, inplace = True)
+df.drop(df[df['comuna'] == "AU"].index, inplace = True)
+df.drop(df[df['comuna'] == "SN"].index, inplace = True)
+
+table = [[i, j] for i,j in df.comuna.value_counts().items()]
+
+Markdown(tabulate(
+  table, 
+  headers=["Valor", "Cantidad de datos"]
+))
+```
+
+De @tbl-count-comuna-1 se puede notar que la candelaria es la comuna en la que más ocurren accidentes, mientras que es común que los corregimientos estén bajos en cantidades.
+
+
+# Formulación modelo predictivo
+
+Para la formulación del modelo se tiene en cuenta que se espera predecir la cantidad de accidentes dado un día de la semana (Lunes, Martes, ..., Domingo), mes y semana del mes contando meses en los que habrán 4 semanas y otros en los que habrán 5 (cambiando dependiendo de qué día comience la semana), considerando además si el día es festivo y si es quincena,  tomando como quincena los días 15, 30 y 31.
+
+Así, se propone un modelo de regresión lineal tipo poisson que se recomienda para cuando la variable a predecir funciona como o es un conteo de eventos [@EcoAnal]. 
+
+*Falta hablar de la independencia*
+
+## Preparación datos
+
+Partiendo del dataframe y los cambios hechos anteriormente comenzaremos contando las observaciones de accidentes de tipo 'Atropello' para cada día:
+
+```{python}
+#| tbl-cap: Dataframe resultante inicial
+#| label: tbl-nuevo-df 
 #| warning: false
 
 #df.columns
@@ -292,36 +345,114 @@ df['fecha_accidente']=pd.to_datetime(df['fecha_accidente'], format='%d/%m/%Y %H:
 summarise.inform = False
 
 conteos = (
-     
      df >>
-     group_by(df.fecha_accidente , df.clase_accidente, df.barrio, df.comuna,df.location) >>
+     group_by(df.fecha_accidente , df.clase_accidente) >>
      summarise(y=n())
 
  )
 
+
+
 conteos = pd.DataFrame(conteos)
+
+conteos=conteos[conteos["clase_accidente"]=="Atropello"]
+conteos["fecha"] = conteos.fecha_accidente.dt.date
+conteos['fecha']=pd.to_datetime(conteos['fecha'], format='%Y/%m/%d')
+
+conteos = conteos.groupby(["fecha"]).sum().reset_index()
+
 conteos
 ```
 
+Para cada observación resultante las variables mencionadas anteriormente usando la fecha de la observación como base, además del año para hacer la división en datos de entrenamiento y validación. Se continuará agregando la variable binaria 'dia_especial' indicando si el día en cuestión es festivo cruzando cada fecha con un dataframe obtenido de la librería holidays_co. Y se verá si el día es 15, 30 0 31 para la variable binaria 'quincena'.
 
 ```{python}
+#| tbl-cap: Dataframe resultante
+#| label: tbl-nuevo-df-1
 
-conteos["dia"] = conteos.fecha_accidente.dt.day
-conteos["mes"] = conteos.fecha_accidente.dt.month
-conteos["semana"] = conteos.fecha_accidente.dt.week
-conteos["anio"] = conteos.fecha_accidente.dt.year
 
-conteos["fecha"] = conteos.fecha_accidente.dt.date
-conteos['fecha']=pd.to_datetime(conteos['fecha'], format='%Y/%m/%d')
+conteos["anio"] = conteos.fecha.dt.year
+conteos["dia"] = conteos.fecha.dt.day_name()
+conteos["mes"] = conteos.fecha.dt.month
+conteos['semana_del_mes'] = conteos['fecha'].apply(lambda d: (d.day-1) // 7 + 1)
+
 conteos['dia_especial'] = np.where(conteos.loc[:,'fecha'].isin(holidays['holidays_fecha']),1,0)
-conteos['dia'] = conteos['dia'].astype('object')
-conteos['mes'] = conteos['mes'].astype('object')
+conteos['quincena'] = np.where(conteos.loc[:,'fecha'].dt.day.isin([15,30,31]),1,0)
 
-train = conteos[conteos["anio"] <= 2018]
 
-test = conteos[conteos["anio"] >= 2019]
+conteos
+```
 
-formula = 'y~ anio+mes+semana+dia+comuna+clase_accidente+dia_especial'
+### Revisión de Outliers
+
+Para revisar outliers y permitir generalización del modelo se usará el Z-Score o número de desviaciones estándares por arriba o abajo de la media. 
+
+En @tbl-df-outliers-1-7 se pueden observar aquellos valores que superan 1.7 desviaciones estándares de su media. Se procederá eliminando estos datos terminando así con el 90.1087% de la variabilidad y 2047 de 2242 datos.
+
+```{python}
+#| tbl-cap: Outliers por encima de 1.7
+#| label: tbl-df-outliers-1-7
+
+from scipy import stats
+import numpy as np
+
+z = np.abs(stats.zscore(conteos["y"]))
+
+conteos["Z"]=z
+conteos[conteos["Z"]>1.7]
+```
+
+
+### División en Train y Validation
+
+Así y luego de divididos los datos en train y validation terminamos con dos dataframes @tbl-df-train y @tbl-df-validation respectivamente.
+
+```{python}
+#| tbl-cap: Dataframe de entrenamiento
+#| label: tbl-df-train
+#| warning: false
+
+
+conteos=conteos[conteos["Z"]<=1.7]
+
+conteos['mes'] = conteos['mes'].astype('str')
+conteos['dia_especial'] = conteos['dia_especial'].astype('str')
+conteos['semana_del_mes'] = conteos['semana_del_mes'].astype('str')
+conteos['quincena'] = conteos['quincena'].astype('str')
+
+
+
+
+
+train = conteos[conteos["anio"] <= 2018].copy()
+
+train.drop(['anio', 'fecha'], axis = 1, inplace = True)
+
+test = conteos[conteos["anio"] >= 2019].copy()
+
+test.drop(['anio', 'fecha'], axis = 1, inplace = True)
+
+train
+```
+
+```{python}
+#| tbl-cap: Dataframe de validacion
+#| label: tbl-df-validation
+
+
+
+test
+```
+
+## Entrenamiento del modelo y revisión de métricas
+
+Luego de divididos los datos pasamos a entrenar el modelo para el que obtendremos un conjunto de coeficientes, cuya información se puede encontrar en @tbl-summary-0.
+
+```{python}
+#| tbl-cap: Resumen resultados
+#| label: tbl-summary-0
+
+formula = 'y~ dia+mes+semana_del_mes+dia_especial+quincena'
 
 import statsmodels.formula.api as smf
 import statsmodels.api as sm
@@ -329,12 +460,160 @@ import statsmodels.api as sm
 
 model = smf.glm(formula = formula, data=train, family=sm.families.Poisson()).fit()
 
-print(model.summary())
+
+#Lectura de summary_1
+
+summary_1 = pd.read_csv('resultados_summary.csv', sep = ",")
+
+cabeza=["Item 1", "Descripcion 1","Item 2" ,"Descripcion 2"]
+summary_1 = pd.read_csv('resultados_summary.csv', sep = ",", header=None)
+
+Markdown(tabulate(
+  summary_1.drop(8), 
+  headers=summary_1.columns
+))
+```
+
+Se puede notar de @tbl-summary-0 que dado el P>|z| podemos concluir como significativas gran parte de las variables, a excepción de: si un día es quincena o no, si hace parte de la semana cuatro del mes, si es un dia especial o no e incluso si el dia hace parte de la segunda semana del mes.
+
+```{python}
+#| tbl-cap: Resultados MAE
+#| label: tbl-mae
+
+
+predict_tr = model.predict(train)
+mae_train = np.mean(abs(train.y - predict_tr))
+
 
 predict = model.predict(test)
+mae_test = np.mean(abs(test.y - predict))
 
-print(np.mean((test.y - predict)**2))
+
+Diferencia_porcentual = str((1-mae_train/mae_test)*100) + "%"
+
+tabla=[
+  ["MAE entrenamiento",mae_train],
+  ["MAE validación",mae_test],
+  ["Diferencia porcentual", Diferencia_porcentual]
+]
+
+Markdown(tabulate(
+  tabla, 
+  headers=["Dato","Valor"]
+))
+
 ```
+
+De @tbl-mae podemos notar que tenemos un MAE para los datos de entrenamiento de 	2.5627 mientras que para los datos de validación es de 	2.8615, comparando los dos resultados se puede notar que existe una diferencia porcentual de 10.4428% entre estos por lo que podemos no confirmar la existencia de sobreajuste. 
+
+
+## Analisis resultados
+
+Entrenado y validado el modelo con los datos de los años del 2014 al 2020 pasaremos a revisar cómo se comporta este para los años 2021 y 2022, para ello crearemos un dataset de testeo que partirá de la fechas 1/1/2021 e ira hasta 31/12/2022, donde agregaremos las variables usadas para el entrenamiento para cada observación generada en este rango de tiempo:
+
+```{python}
+#| tbl-cap: Dataframe de testeo
+#| label: tbl-df-test
+
+
+from pandas.core import apply
+from datetime import datetime, date, timedelta
+import holidays_co 
+
+inicio = datetime(2021,1,1)
+fin    = datetime(2022,12,31)
+
+lista_fechas = [inicio + timedelta(days=d) for d in range((fin - inicio).days + 1)] 
+
+
+validacion = pd.DataFrame(lista_fechas, columns=['fecha'])
+
+validacion["anio"] = validacion.fecha.dt.year
+validacion["dia"] = validacion.fecha.dt.day_name()
+validacion["mes"] = validacion.fecha.dt.month
+validacion['semana_del_mes'] = validacion['fecha'].apply(lambda d: (d.day-1) // 7 + 1)
+validacion['quincena'] = np.where(validacion.loc[:,'fecha'].dt.day.isin([15,30,31]),1,0)
+validacion['dia_especial'] = np.where(validacion["fecha"].apply(lambda x: holidays_co.is_holiday_date(x)),1,0)
+
+
+validacion.head()
+```
+
+Así partiendo de @tbl-df-test obtendremos las predicciones iniciales encontradas en la columna 'prediccion' de @tbl-df-test-pred que además se pueden observar en @fig-st-test.
+
+```{python}
+#| tbl-cap: Dataframe de testeo con predicciones
+#| label: tbl-df-test-pred
+
+validacion['mes'] = validacion['mes'].astype('str')
+validacion['dia_especial'] = validacion['dia_especial'].astype('str')
+validacion['semana_del_mes'] = validacion['semana_del_mes'].astype('str')
+validacion['quincena'] = validacion['quincena'].astype('str')
+
+pred_test = model.predict(validacion)
+validacion["prediccion"]=pred_test
+
+# si la aplico la ceil la grafica de ve fea, sin embargo el valor debe ser entero
+#validacion["prediccion"] = validacion["prediccion"].apply(np.ceil)
+
+validacion.head()
+```
+
+```{python}
+#| fig-cap: Prediccion inicial cantidad de accidentes 2021-2022
+#| label: fig-st-test
+
+import plotly.express as px
+
+fig = px.line(validacion, x='fecha', y="prediccion",
+              title="Predicción de cantidad de accidentes tipo atropello en Medellín 2021 - 2022")
+fig.show()
+```
+
+Dichos resultados iniciales son mejores de entender en el conjunto de los enteros pues, por ejemplo, es complicado hablar de 4.5 atropellos en un día, por lo que se hace necesario mapear el conjunto de resultados que en un principio es subconjunto de los reales a dicho conjunto ordenado. La función escogida para este mapeo será el piso. Así, transformando cada uno de estos valores iniciales podemos obtener las siguientes estadísticas descriptivas sobre las predicciones para los años:
+
+```{python}
+#| tbl-cap: Estadisticas descriptivas predicciones enteras
+#| label: tbl-sum-test-pred-int
+
+import math
+
+
+validacion["prediccion_entera"] =validacion["prediccion"].apply(np.floor)
+
+sum_val_resul=validacion.prediccion_entera.describe()
+
+
+tabla=[[i,j] for i, j in sum_val_resul.describe().items()]
+
+Markdown(tabulate(
+  tabla, 
+  headers=["Dato","Valor"]
+))
+
+```
+
+```{python}
+#| fig-cap: Histograma predicciones enteras
+#| label: fig-hist-test
+
+import seaborn as sns
+
+sns.histplot(data=validacion, x="prediccion_entera",bins=27)
+```
+```{python}
+#| fig-cap: Prediccion inicial cantidad de accidentes 2021-2022
+#| label: fig-st-test-int
+
+fig = px.line(validacion, x='fecha', y="prediccion_entera",
+              title="Predicción de cantidad de accidentes tipo atropello en Medellín 2021 - 2022")
+fig.show()
+```
+
+# Caracterización por barrios
+
+De acuerdo a los objetivos planteados desde un principio se hace interesante analizar 
+
 
 ---
 nocite: |
