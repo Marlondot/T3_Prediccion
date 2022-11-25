@@ -27,29 +27,28 @@ appendix-style: default
 
 # Introducción
 
-*Falta hablar de la clusterización*
-
-El siguiente trabajo tiene como objetivo la predicción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de los accidentes reportados.
+El siguiente trabajo tiene como objetivo la predicción de accidentalidad en la ciudad de Medellín a partir de la historia reciente de accidentes reportados y el analisis de accidentalidad de los barrios de la ciudad por grupos.
 
 Para realizar el siguiente reporte utilizamos la base de datos facilitada por @DataWebsite que además contiene un diccionario para cada una de las columnas.
 
 ## Contexto del problema
 
-Uno de los problemas principales que tienen todas las ciudades del mundo son los incidentes de transitos. Se entiende por Incidente de tránsito: evento, generalmente involuntario, generado al menos por un vehículo en movimiento, que causa daños a personas y bienes involucrados en él, e igualmente afecta la normal circulación de los vehículos que se movilizan por la vía o vías comprendidas en el lugar o dentro 
-de la zona de influencia del hecho. (Ley 769 de 2002 - Código Nacional de Tránsito)
+Uno de los problemas principales que tienen todas las ciudades del mundo son los incidentes de transitos. Se entiende por Incidente de tránsito: evento, generalmente involuntario, generado al menos por un vehículo en movimiento, que causa daños a personas y bienes involucrados en él, e igualmente afecta la normal circulación de los vehículos que se movilizan por la vía o vías comprendidas en el lugar o dentro de la zona de influencia del hecho [@eu03].
 
-En la ciudad de Medellín se requiere predecir la accidentalidad que va a ocurrir, también se requiere agrupar los barrios, para saber que características en
-común posee cada uno para así tomar decisiones en el ámbito de la política pública para mejorar este problema. También es útil para los habitantes de medellín para saber en que lugares de la ciudad ocurren más incidentes viales y realizar estudios en base a esto.
+Medellín como ciudad que aumenta su parque automotor cada año requiere medidas para lidiar con dichos incidentes, es por esto que se propone para la ciudad y sus ciudadanos la predicción de accidentalidad (cantidad de accidentes) dada una cierta fecha, además de un análisis por grupos de barrios con características similares para así tomar decisiones en el ámbito de la política pública que permitan las mejores soluciones para dicho problema. 
 
-## Resumen resultados
-
-*Falta*
 
 ## Metodos empleados y objetivos de desarrollo
 
-*Falta hablar de la clusterización*
+Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. En este caso nos enfocaremos en el tipo 'atropello', esto con el objetivo de ofrecer un producto enfocado en el peatón, principal implicado de este tipo de accidente y el más vulnerable y prioritario en temas generales de movilidad.
 
-Teniendo en cuenta el contexto anterior en el siguiente trabajo se desarollará un modelo predictivo, basados en técnicas de aprendizaje estadístico, para así obtener la accidentalidad de una de cinco clases de accidente, entre las cuales encontramos: 'choque', 'atropello' 'volcamiento' 'caida de ocupante' 'incendio' y 'otro'. Se usará Google colab y Python junto con las librerías sklearn y statsmodels, además del framework streamlit para la creación de un aplicativo web que simplifique la consulta de Credit Score a partir de diferentes variables.
+Además de ello se planea ofrecer un análisis sobre grupos de barrios, esto con el objetivo de generar un producto suficiente informativo tanto para ciudanos comunes que deséen tomar decisiones que impliquen movilidad general como para entes gubernamentales que planéen implementar políticas en pro de la solución del problema mencionado anteriormente. 
+
+Se usará Google colab y Python junto con las librerías sklearn y statsmodels, además del framework streamlit para la creación de un aplicativo web que permita mirar diferentes informaciones generadas en el área, sea la predicción o la agrupación.
+
+## Resumen resultados
+
+Utilizando un modelo lineal generalizado de tipo poisson para la predicción de accidentes obtenemos valores reales que mapeados a enteros van desde 8 atropellos a 12 atropellos. Por otra parte a la hora de agrupar barrios se encontraron grupos de barrios con poca cantidad de barrios que además tenían la mayor accidentalidad, se recomendó así poner especial atención a estos.
 
 # Importe y análisis de datos
 
@@ -91,7 +90,7 @@ df.head(5)
 
 En @tbl-import-presentacion-inicial se puede observar el dataframe inicial de los datos, donde además se puede apreciar el tipo de dato de algunas de las columnas.
 
-Por otra parte, como se ve en @tbl-import-dias-festivos  también se hace un cargue de datos a los días festivos.
+Por otra parte, como se ve en @tbl-import-dias-festivos  también se hace un cargue de datos a un dataset que contiene días festivos que será usado en siguientes secciones.
 
 
 ```{python}
@@ -328,8 +327,6 @@ Para la formulación del modelo se tiene en cuenta que se espera predecir la can
 
 Así, se propone un modelo de regresión lineal tipo poisson que se recomienda para cuando la variable a predecir funciona como o es un conteo de eventos [@EcoAnal]. 
 
-*Falta hablar de la independencia*
-
 ## Preparación datos
 
 Partiendo del dataframe y los cambios hechos anteriormente comenzaremos contando las observaciones de accidentes de tipo 'Atropello' para cada día:
@@ -364,7 +361,7 @@ conteos = conteos.groupby(["fecha"]).sum().reset_index()
 conteos
 ```
 
-Para cada observación resultante las variables mencionadas anteriormente usando la fecha de la observación como base, además del año para hacer la división en datos de entrenamiento y validación. Se continuará agregando la variable binaria 'dia_especial' indicando si el día en cuestión es festivo cruzando cada fecha con un dataframe obtenido de la librería holidays_co. Y se verá si el día es 15, 30 0 31 para la variable binaria 'quincena'.
+Para cada observación resultante las variables mencionadas anteriormente usando la fecha de la observación como base, además del año para hacer la división en datos de entrenamiento y validación. Se continuará agregando la variable binaria 'dia_especial' indicando si el día en cuestión es festivo cruzando cada fecha con el dataframe @tbl-import-dias-festivos obtenido de la librería holidays_co. Y se verá si el día es 15, 30 0 31 para la variable binaria 'quincena'.
 
 ```{python}
 #| tbl-cap: Dataframe resultante
@@ -474,7 +471,7 @@ Markdown(tabulate(
 ))
 ```
 
-Se puede notar de @tbl-summary-0 que dado el P>|z| podemos concluir como significativas gran parte de las variables, a excepción de: si un día es quincena o no, si hace parte de la semana cuatro del mes, si es un dia especial o no e incluso si el dia hace parte de la segunda semana del mes.
+Se puede notar de @tbl-summary-0 que dado el P>|z| podemos concluir como significativas gran parte de las variables, a excepción de: si un día es sábado, si un día es miércoles, si el mes de la fecha es noviembre, si el mes de la fecha es junio, si un día es quincena o no, si hace parte de la semana cinco, cuatro, tres o dos del mes, si es un dia especial o no e incluso.
 
 ```{python}
 #| tbl-cap: Resultados MAE
@@ -570,6 +567,8 @@ fig = px.line(validacion, x='fecha', y="prediccion",
 fig.show()
 ```
 
+De aquellos pronósticos iniciales de @fig-st-test se puede decir que dan como resultado una serie con cambios de nivel y pendiente nula, de varianza aproximadamente constante donde hay indicios de presencia de un patrón periódico siendo los menores valores pronosticados para el mes de enero y los mayores para el mes de septiembre.
+
 Dichos resultados iniciales son mejores de entender en el conjunto de los enteros pues, por ejemplo, es complicado hablar de 4.5 atropellos en un día, por lo que se hace necesario mapear el conjunto de resultados que en un principio es subconjunto de los reales a dicho conjunto ordenado. La función escogida para este mapeo será el piso. Así, transformando cada uno de estos valores iniciales podemos obtener las siguientes estadísticas descriptivas sobre las predicciones para los años:
 
 ```{python}
@@ -584,7 +583,7 @@ validacion["prediccion_entera"] =validacion["prediccion"].apply(np.floor)
 sum_val_resul=validacion.prediccion_entera.describe()
 
 
-tabla=[[i,j] for i, j in sum_val_resul.describe().items()]
+tabla=[[i,j] for i, j in sum_val_resul.items()]
 
 Markdown(tabulate(
   tabla, 
@@ -593,16 +592,16 @@ Markdown(tabulate(
 
 ```
 
-```{python}
-#| fig-cap: Histograma predicciones enteras
-#| label: fig-hist-test
+De @tbl-sum-test-pred-int se puede notar que la media para la cantidad de atropellos en los dos años es de 9.97 para una desviación estándar de 0.793
 
-import seaborn as sns
+Además como se puede observar en el histograma @fig-hist-test los valores de atropellos por día van de 8 a 12:
 
-sns.histplot(data=validacion, x="prediccion_entera",bins=27)
-```
+![Histograma de predicciones enteras](histograma_2021_2022.png){#fig-hist-test}
+
+Por otra parte al graficar dichos valores enteros en el espacio de tiempo obtenemos @fig-st-test-int:
+
 ```{python}
-#| fig-cap: Prediccion inicial cantidad de accidentes 2021-2022
+#| fig-cap: Prediccion cantidad de accidentes 2021-2022
 #| label: fig-st-test-int
 
 fig = px.line(validacion, x='fecha', y="prediccion_entera",
@@ -612,15 +611,315 @@ fig.show()
 
 # Caracterización por barrios
 
-De acuerdo a los objetivos planteados desde un principio se hace interesante analizar 
+De acuerdo a los objetivos planteados desde un principio se hace interesante analizar el comportamiento de los barrios de acuerdo a diferentes variables.
 
+## Creación de variables
+
+En primera instancia crearemos un dataframe que por barrio cuente la cantidad de accidentes con muertos, con heridos y sólo daños:
+
+
+```{python}
+#| tbl-cap: Creación de acuerdo a gravedad_accidente
+#| label: tbl-cre-gravedad_accidente
+
+
+x = df[['barrio','gravedad_accidente']].value_counts()
+
+nuevo_df = pd.DataFrame(x)
+nuevo_df = nuevo_df.reset_index()
+
+nuevo_df = nuevo_df.pivot(index='barrio', columns='gravedad_accidente', values=0).reset_index()
+nuevo_df = nuevo_df.fillna(0)
+
+
+nuevo_df
+```
+
+Se continuará creando una cuenta por barrio de tipos de accidentes, diferenciando por: Caida de Ocupante, Choque, Incendio, Otro, y Volcamiento:
+
+```{python}
+#| tbl-cap: Creación de acuerdo a clase_accidente
+#| label: tbl-cre-clase_accidente
+
+x1 = df[['barrio','clase_accidente']].value_counts()
+x1
+
+nuevo_df1 = pd.DataFrame(x1)
+nuevo_df1 = nuevo_df1.reset_index()
+
+nuevo_df1 = nuevo_df1.pivot(index='barrio', columns='clase_accidente', values=0).reset_index()
+nuevo_df1 = nuevo_df1.fillna(0)
+
+#nuevo_df1 = nuevo_df1[['barrio','Atropello']]
+nuevo_df1
+
+```
+
+Se continuará creando una cuenta por barrio de lugar donde ocurrieron los accidentes:
+
+```{python}
+#| tbl-cap: Creación de acuerdo a diseno
+#| label: tbl-cre-diseno
+
+diseño = df[['barrio','diseno']].value_counts()
+df_diseño = pd.DataFrame(diseño)
+df_diseño = diseño.reset_index()
+df_diseño = df_diseño.pivot(index='barrio', columns='diseno', values=0).reset_index()
+df_diseño = df_diseño.fillna(0)
+df_diseño
+
+```
+
+Así y haciendo un merge terminaríamos con un dataframe de 22 columnas y 427 filas como se puede ver en @tbl-barrios-1.
+
+```{python}
+#| tbl-cap: Dataframe barrios antes de limpieza
+#| label: tbl-barrios-1
+juntos = pd.merge(nuevo_df,nuevo_df1,how='inner',on="barrio")
+juntos2 = pd.merge(juntos,df_diseño,how='inner',on="barrio")
+
+juntos2
+```
+
+## Limpieza dataset resultante
+
+A pesar de que las variables creadas puedan estar lo suficientemente limpias, existe un problema: Medelín no tiene 427 barrios. Al revisar la variable barrios se puede ver que muchos barrios están repetidos en forma de código (Medellín también identifica sus barrios por un código) o con diferencias de mayúsculas y minúsculas, espacios, entre otros, así, luego de hacer la limpieza y el cambio de nombres respectivos para uniformizar todos estos y asumiendo que cuandos dos barrios eran el mismo tenían diferente información por lo que lo procedente era sumarla, resulta el dataframe encontrado en @tbl-barrios-2.
+
+```{python}
+#| tbl-cap: Dataframe barrios luego de limpieza
+#| label: tbl-barrios-2
+#| warning: false
+
+repetidos = [
+  ['Asomadera No. 1', 'Asomadera No.1'],
+  ['Aures No.2', 'Aures No. 2'],
+  ['Aguas frias', 'Aguas Frias'],
+  ['Berlin', 'Berlín'],
+  ['Bomboná No. 1', 'Bomboná No.1'],
+  ['Campo Valdés No.2', 'Campo Valdés No. 2'],
+  ['Manrique Central No.1', 'Manrique Central No. 1'],
+  ['Manrique Central No.2', 'Manrique Central No. 2'],
+  ['Moscú No.2', 'Moscú No. 2'],
+  ['Moscú No.1', 'Moscú No. 1'],
+  ['Nueva Villa de La Iguaná', 'Nueva Villa de la Iguaná'],
+  ['Santo Domingo Savio No.1', 'Santo Domingo Savio No. 1'],
+  ['Versalles No.2', 'Versalles No. 2'],
+  ['Versalles No.1', 'Versalles No. 1'],
+  ['Villa Liliam', 'Villa Lilliam']
+ ]
+
+juntos3 = juntos2.copy()
+
+for lista in repetidos:
+
+  tin = juntos3[juntos3['barrio'].isin(lista)]
+  tin = tin.sum()
+
+  tin['barrio'] = lista[0]
+
+  juntos3[juntos3['barrio'] == lista[0]] =  tin
+
+  if len(lista) > 1:
+    mask = ~juntos3['barrio'].isin(lista[1:])
+    juntos3 = juntos3.loc[mask, :]
+
+codigo_barrio = pd.read_csv('codigo_barrio.csv')
+codigo_barrio['codigos'] = codigo_barrio['codigos'].apply(lambda x: str(x).zfill(4))
+
+diccionario_barrio = dict(zip(codigo_barrio['codigos'], codigo_barrio['nombres']))
+
+
+#df['barrio'] = df['barrio'].apply(lambda x:x.replace('\\xC1','Á'))
+for word, replacement in diccionario_barrio.items():
+  juntos3['barrio'] = juntos3['barrio'].apply(lambda x:x.replace(word,replacement))
+
+
+import unidecode 
+
+juntos3['barrio junto'] = juntos3['barrio']
+juntos3['barrio junto'] = juntos3['barrio junto'].str.replace(' ','')
+juntos3['barrio junto'] = juntos3['barrio junto'].str.replace('No.|N°','')
+juntos3['barrio junto'] = juntos3['barrio junto'].str.replace('-','')
+juntos3['barrio junto'] = juntos3['barrio junto'].str.lower()
+juntos3[['barrio junto']] = juntos3[['barrio junto']].apply(lambda x: x.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8'))
+
+
+juntos3.sort_values(['barrio junto'], inplace=True)
+juntos3.reset_index(inplace=True, drop=True)
+
+
+agrup = {
+  'barrio': max,
+  'Con muertos': sum,
+  'Atropello': sum,
+  'Ciclo Ruta': sum,
+  'Glorieta': sum,
+  'Interseccion': sum,
+  'Lote o Predio': sum,
+  'Paso Elevado': sum,
+  'Paso Inferior': sum,
+  'Paso a Nivel': sum,
+  'Pontón': sum,
+  'Puente': sum,
+  'Tramo de via': sum,
+  'Tunel': sum,
+  'Via peatonal': sum
+}
+juntos2 = juntos3.groupby('barrio junto').agg(agrup).reset_index(drop=True)
+
+#Revisar si esta linea sale
+juntos2 = juntos2.drop(range(0,7)).reset_index(drop = True)
+#
+
+#Esta parte se usa para hacer el analisis de correlacion
+agrup_anal=agrup.copy()
+
+agrup_anal["Incendio"]=sum
+agrup_anal["Otro"]=sum
+agrup_anal["Volcamiento"]=sum
+agrup_anal["Choque"]=sum
+agrup_anal["Caida Ocupante"]=sum
+
+agrup_anal["Con heridos"]=sum
+agrup_anal["Solo daños"]=sum
+
+juntos_anal = juntos3.groupby('barrio junto').agg(agrup_anal).reset_index(drop=True)
+
+juntos_anal = juntos_anal.drop(range(0,7)).reset_index(drop = True)
+#
+
+juntos_anal
+```
+
+Por otra parte en @fig-corr-anal-1 se puede notar la correlación entre las diferentes variables. 
+
+![Matriz de correlacion para barrios a agrupar](corr_for_cluster_anal.png){#fig-corr-anal-1}
+
+De la anterior matriz podemos notar que las variables relacionadas a gravedad_accidente están muy correlacionadas entre sí, por lo que tomaremos sólo una de estas: 'Con muertos', haremos esto mismo para el grupo de variables de 'clase_accidente' pues también están bastante correlacionadas (a excepción de 'incendio' que se obvia por poca cantidad de datos), seleccionando así a 'Atropello' que además fue nuestra variable de interés a predecir anteriormente.
+
+Así terminamos con el dataset: @tbl-barrios-3
+
+```{python}
+#| tbl-cap: Dataframe barrios luego de limpieza y analisis de correlacion
+#| label: tbl-barrios-3
+
+juntos2
+```
+
+
+## Agrupación
+
+A continuación se precederá a hacer a agrupación para los barrios y zonas especiales de la ciudad de Medellín:
+
+### Cantidad de grupos
+
+Para proceder con el desarrollo del modelo se comenzará escogiendo la cantidad de clusters o grupos en los que se segmentarán los datos. Para ello se hará un análisis de Elbow Curve cuya inercia es obtenida al ajustar los datos al algoritmo K-Means:
+
+![Curva de codo](elbow_curve.png){#fig-elbow-curve}
+
+En @fig-elbow-curve se puede notar que la pendiente de inercia de un cluster a otro comienza a ser menor desde que hay 4 grupos, pero también se podría identificar el codo para 6 grupos. Haciendo un análisis de silueta a partir del algoritmo K-Means y proyectando las observaciones sobre dos ejes obtenemos las gráficas: @fig-silueta-4, @fig-silueta-5 y @fig-silueta-6 para una agrupación respectiva en 4, 5 y 6 grupos para las que se obtuvieron scores respectivos de 0.56945, 0.51939 y 0.51933. Dada la poca diferencia de scores para agrupaciones de 4 y 6 y la notable uniformidad en grupos apreciada en @fig-silueta-6 se tomará 6 como la cantidad de clústeres en la que se agruparán los datos
+
+![Analisis de silueta - 4 grupos](silueta_4.png){#fig-silueta-4}
+
+![Analisis de silueta - 5 grupos](silueta_5.png){#fig-silueta-5}
+
+![Analisis de silueta - 6 grupos](silueta_6.png){#fig-silueta-6}
+
+### Entrenamiento del modelo
+
+Ahora que tenemos la cantidad de clusters seleccionada se procederá a entrenar el modelo. Usaremos un algoritmo de clustering aglomerativo con linkage 'ward' para ello.
+
+Entrenado el modelo en  se podrán notar las observaciones en un plano tridimensional donde se comparan las variables 'Glorieta', 'Con muertos' y 'Paso Elevado' de cada observación y donde el color representa el cluster al que pertenece cada observación.
+
+```{python}
+#| label: fig-kmeans-1
+#| fig-cap: Observaciones en 3 dimensiones de los clusters
+
+"""
+from sklearn.cluster import AgglomerativeClustering
+clustering= AgglomerativeClustering(n_clusters=6,linkage="ward")
+clustering.fit(juntos2.drop(['barrio'],axis=1))
+clustering.labels_
+
+final=juntos2.copy()
+final["cluster"]=clustering.labels_
+
+#final.to_csv('final.csv',index=False)
+
+"""
+
+final=pd.read_csv("final.csv")
+
+import plotly.express as px
+import plotly.graph_objects as go
+
+fig = px.scatter_3d(final, x="Glorieta", y="Con muertos", z="Paso Elevado",color="cluster",labels='barrio',size_max=0.0001)
+fig.show()
+```
+
+## Analisis de resultados
+
+Generada la base de datos con los resultados se comienza a hacer el análisis sobre ella. Es de importancia hacer notar que dado el funcionamiento de renderizado de quarto es necesario exportar los resultados generados y usarlos para mantener una constancia en los análisis sin tener problemas por la generación aleatoria de los modelos.
+
+![Histogramas de variables para cada grupo - 1](anal_1.png){#fig-anal-1}
+
+En @fig-anal-1 se pueden observar histogramas para cada grupo generado en cada una de las variables. En primera instancia se puede notar la relevancia que tiene la variable 'Tramo de via' en cada uno de los grupos. Para continuar con un análisis más profundo y notar posibles diferencias entre las demás variables obviaremos esta última:
+
+![Histogramas de variables para cada grupo - 2](anal_2.png){#fig-anal-2}
+
+De @fig-anal-2 se puede observar que:
+
+*   El cluster 0 es el segundo menor en cuanto a accidentalidad en las variables evaluadas.
+*   El cluster 1 está compuesto por los barrios de mayor accidentalidad por atropellos y accidentes ocurridos en intersecciones, lotes o predios.
+*   El cluster 2 es el tercer menor grupo de barrios en cuanto a accidentalidad en las variables evaludas.
+*   El cluster 3 está compuesto por el grupo de barrios cuya accidentalidad es la segunda mayor en comparación a los otros.
+*   El cluster 4 es el grupo de barrios con menor accidentalidad en todas las variables.
+*   El cluster 5 es el tercer mayor en cuanto a accidentalidad.
+*   En general, en todos los clusters la cantidad de accidentes ocurridos en paso inferior, paso a nivel, portón, puente, túnel y vía peatonal son muy pocos por lo que no se considera relevante profundizar en estos resultados.
+
+Además de esto también es posible centrarse en la variable 'Tramo de via' y algunos de sus similares:
+
+![Histogramas de variables para cada grupo - 3](anal_3.png){#fig-anal-3}
+
+De estas gráficas se puede ver que:
+
+*   El orden en cuanto a accidentalidad se mantiene entre los grupos, siendo el de mayor media de accidentes el grupo 1 y el de menor media el grupo 4.
+*   Los accidentes en tramo de vía son con gran diferencia los de mayor ocurrencia y los accidentes con muertos o en ciclorruta los de menor.
+
+Pasando a analizar las estadísticas descriptivas para el caso de Atropellos como accidentes tenemos:
+
+```{python}
+#| tbl-cap: Analisis descriptivo sobre los grupos y la variable Atropello
+#| label: tbl-anal-descr
+
+
+
+anal_descr=final[['cluster', "Atropello"]].groupby('cluster').describe()
+
+anal_descr
+```
+
+Así, se puede notar que:
+
+*   El cluster 0 es el de mayor número de barrios (132) y aún así es el segundo menor media de accidentes.
+*   A pesar de que el cluster 1 solo tiene 8 barrios, es el de mayor media de accidentalidad por lo que se requiere especial atención a estos barrios para realizar intervenciones con el fin de reducir ésta medida.
+*   El cluster 2 a pesar de que tiene aproximadamente 8 veces más barrios que el cluster 1 (tiene 63 exactamente), es el tercer menor grupo en cuanto a accidentalidad.
+*   El cluster 3, similar que el cluster 1 es el segundo grupo con menor cantidad de barrios (13) sin embargo, es el segundo mayor en cuanto a accidentalidad media por lo que también requiere especial atención con el fin de implementar medidas para reducir esto.
+*   El cluster 4 es el de menor accidentalidad media a pese a ser el segundo en cuanto a cantidad de barrios (106).
+*   El cluster 5 similar a lo que ocurre en los clusters 1 y 3 es de los mayores en accidentalidad a pesar de solo tener 13 barrios.
+*   En general se identifica que los clusters con mayor cantidad de barrios, son los de menor accidentalidad y los de menor cantidad de barrios los de mayor accidentalidad.
+
+En general se pueden dividir los clusters en 2:
+
+*   El primer grupo es el de mayor accidentalidad, compuesto por los clusters 1, 3 y 5 (34 barrios en total) los cuales deben ser intervenidos con urgencia.
+*   El segundo grupo es el de menor accidentalidad, compuesto por los clusters 0, 2 y 4 (301 barrios en total) 
 
 ---
 nocite: |
   @*
 ---
 
-## Referencias
+# Referencias
 
 ::: {#refs}
 :::
