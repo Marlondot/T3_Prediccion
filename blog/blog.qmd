@@ -914,6 +914,21 @@ En general se pueden dividir los clusters en 2:
 *   El primer grupo es el de mayor accidentalidad, compuesto por los clusters 1, 3 y 5 (34 barrios en total) los cuales deben ser intervenidos con urgencia.
 *   El segundo grupo es el de menor accidentalidad, compuesto por los clusters 0, 2 y 4 (301 barrios en total) 
 
+# Conclusiones y recomendaciones
+
+Dado que solamente son 34 barrios los que presentan un gran índice de accidentalidad, se deben concentrar los esfuerzos y estrategias para reducir esta. Para empezar se debería encontrar la razón del por qué son estos los barrios accidentados se puede comenzar analizando cosas como:
+
+*   El estado de las vías en dichos lugares.
+*   Señalización en las calles.
+*   Velocidad a la cual transitan los vehículos.
+
+Una vez identificados los factores que hacen más propenso a accidentes el barrio, atacarlos e implementar medidas como reducción de la velocidad máxima en los trayectos, construcción de semáforos, mejoras a la vía (en caso de haber huecos o zonas desgastadas) y posteriormente revisar si las medidas tomadas fueron efectivas. 
+
+A nivel general, cualquier persona en Medellín puede usar los resultados presentes aquí y ofrecidos en el producto de software para sostener diferentes decisiones con relación a la movilidad y para establecer conclusiones en el debate general de políticas públicas. 
+
+En cuanto a las predicciones de Atropellos dada la fecha, se deben estudiar las razones por la que la incidencia de accidentes es mucho mayor en meses como septiembre, pero menor en enero para así establecer soluciones a nivel general en movilidad y política públicas.
+
+
 ---
 nocite: |
   @*
